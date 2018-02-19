@@ -1,0 +1,47 @@
+#!/bin/bash
+
+helpfunc() {
+    echo "Usage: $0 [container_name]"
+    echo "  --help           Help. Display this message and quit."
+    echo "  exit status 1    User not added to docker group"
+    echo "  exit status 2    Docker container not running or container name not set"
+    exit
+}
+container_name="$1"
+
+if [ "$EUID" -ne 0 ]; then
+  # check if current user (consul user) is added to docker group
+  added_to_docker_group="false"
+  groups=$(groups)
+  for group in $groups ; do
+    if [[ "$group" == "docker" ]];then
+        added_to_docker_group="true"
+    fi
+  done
+fi
+
+if [[ "$added_to_docker_group" == "false" ]];then
+    echo "WARNING user not added to docker group"
+    exit 1
+fi
+
+if [[ -z "$container_name" ]];then
+    echo "CRITICAL container_name not set"
+    exit 2
+fi
+
+# in order to avoid not so helpful bash errors about [[ operator, let's check if
+# docker cli works
+docker ps -a >> /dev/null
+if [[ "$?" != "0" ]];then
+    echo "WARNING \"docker ps -a\" did not exit with status: 0"
+    exit 1
+fi
+
+if [[ $(docker inspect -f {{.State.Running}} "$container_name") == "true" ]];then
+    echo "OK $container_name is running"
+    exit 0
+else
+    echo "CRITICAL $container_name is not running"
+    exit 2
+fi

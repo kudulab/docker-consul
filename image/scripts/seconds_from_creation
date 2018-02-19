@@ -1,0 +1,71 @@
+#!/bin/bash
+
+###############################
+# This script is similar to /usr/lib/nagios/plugins/check_file_age which
+# checks stat Modify timestamp. This script checks stat Change timespamp.
+###############################
+
+helpfunc() {
+    echo "Usage: $0 [-w <secs>] [-c <secs>] -f <file>"
+    echo "  --help     Help. Display this message and quit."
+    echo "  <secs>     File must be no more than this many seconds old (default: warn 240 secs, crit 600)"
+    exit
+}
+
+log_error() {
+  echo -e "\e[31merror: $1\e[0m"
+}
+
+warning=240
+critical=600
+while (( $# > 0 ))
+do
+    opt="$1"
+    shift
+
+    case $opt in
+    --help)
+        helpfunc
+        exit 0
+        ;;
+    -w)
+        warning="$1"
+	shift
+        ;;
+    -c)
+        critical="$1"
+	shift
+        ;;
+    -f)
+        file="$1"
+        ;;
+    --*)
+        log_error "Invalid option: '$opt'" >&2
+        exit 1
+        ;;
+    -*)
+        log_error "Invalid option: '$opt'" >&2
+        exit 1
+        ;;
+   esac
+done
+
+if [[ -z "$file" ]];then
+    echo "file to be checked was not set"
+    exit 1
+fi
+
+seconds_since_1970_to_file_change=$(stat --format '%Z' "$file")
+seconds_since_1970_to_now=$(date +%s)
+
+seconds_since_file_change_to_now=$((seconds_since_1970_to_now - seconds_since_1970_to_file_change))
+
+if [[ seconds_since_file_change_to_now -gt $critical ]];then
+    echo "FILE_AGE CRITICAL: $file is $seconds_since_file_change_to_now seconds old"
+    exit 2
+elif [[ seconds_since_file_change_to_now -gt $warning ]];then
+    echo "FILE_AGE WARNING: $file is $seconds_since_file_change_to_now seconds old"
+    exit 1
+else
+    echo "FILE_AGE OK: $file is $seconds_since_file_change_to_now seconds old"
+fi

@@ -6,9 +6,6 @@ pipelines:
       git:
         git: "git@git.ai-traders.com:consul/docker-ai_consul.git"
         branch: master
-        blacklist:
-          - "doc/**/*"
-          - "**/*.md"
     stages:
       - first_stage:
           clean_workspace: true
