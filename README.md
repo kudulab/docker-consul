@@ -3,7 +3,7 @@
 This image is based on pieces of [official](https://github.com/hashicorp/docker-consul) `consul` image,
  BUT with several changes which fit ait infrastructure:
 
- * This image **runs on ubuntu:16**. official image runs on alpine, we would have problems on it, since most our health checks target ubuntu.
+ * This image **runs on ubuntu:16 - actually [debase](#base-image)**. official image runs on alpine, we would have problems on it, since most our health checks target ubuntu.
  * we don't use docker volume, but rely on bind mounts from host.
  * consul agent **runs as root**. Because we need it to be able to access a lot of external/out of container resources.
  If we had to coordinate uid/gid of consul in docker container with uid/gid of all other container, that would be a PITA (like on aga archive and backup).
@@ -63,6 +63,11 @@ Usage: is_container_running [container_name]
 ```
 Usage: seconds_from_creation [-w <secs>] [-c <secs>] -f <file>
 ```
+
+## Base image
+
+Since `0.3.0` this is using blitznote debase image. See [TP issue](https://aitraders.tpondemand.com/entity/12668-rebuild-ubuntu-images-for-production).
+There may be caveats to this. But image is smaller and faster.
 
 # Development
 
