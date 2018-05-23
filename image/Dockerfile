@@ -1,14 +1,16 @@
-FROM docker-registry.base.ai-traders.com:5000/blitznote/debase:16.04-0
+FROM ubuntu:16.04
+
 COPY apt_cache /etc/apt/apt.conf.d/01_proxy
+
 # Nano, curl is for humans administrating/experimenting.
 # python is for scripting
 RUN apt-get update &&\
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends\
-  tzdata gnupg wget util-linux curl ca-certificates nano git tar unzip rsync ssh-client net-tools iputils-ping &&\
+  tzdata gnupg wget curl ca-certificates cron nano git rake tar unzip sudo rsync apt-transport-https ssh-client net-tools iputils-ping \
+  python2.7 python python-simplejson &&\
   apt-get -y autoremove && apt-get -y autoclean && apt-get -y clean &&\
   rm -rf /tmp/* /var/tmp/* && rm -rf /var/lib/apt/lists/*
-# Fixes wget CA issues in the debase image
-RUN echo 'ca-certificate=/etc/ssl/certs/ca-certificates.crt' >> /etc/wgetrc
+
 RUN wget https://github.com/Yelp/dumb-init/releases/download/v1.2.1/dumb-init_1.2.1_amd64.deb
 RUN dpkg -i dumb-init_*.deb
 
@@ -19,10 +21,13 @@ ENV CONSUL_VERSION=1.0.6
 ENV HASHICORP_RELEASES=https://releases.hashicorp.com
 
 # Set up Consul.
-RUN mkdir -p /tmp/build && \
+RUN gpg --keyserver pgp.mit.edu --recv-keys 91A6E7F85D05C65630BEF18951852D87348FFC4C && \
+    mkdir -p /tmp/build && \
     cd /tmp/build && \
     wget ${HASHICORP_RELEASES}/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_amd64.zip && \
     wget ${HASHICORP_RELEASES}/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_SHA256SUMS && \
+    wget ${HASHICORP_RELEASES}/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_SHA256SUMS.sig && \
+    gpg --batch --verify consul_${CONSUL_VERSION}_SHA256SUMS.sig consul_${CONSUL_VERSION}_SHA256SUMS && \
     grep consul_${CONSUL_VERSION}_linux_amd64.zip consul_${CONSUL_VERSION}_SHA256SUMS | sha256sum -c && \
     unzip -d /bin consul_${CONSUL_VERSION}_linux_amd64.zip && \
     cd /tmp && \
@@ -32,7 +37,7 @@ RUN mkdir -p /tmp/build && \
 RUN mkdir -p /consul/data /consul/config
 
 # Install docker because checks use docker CLI
-RUN /bin/bash -c "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -" &&\
+RUN /bin/bash -c "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -" &&\
   echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable edge" > /etc/apt/sources.list.d/docker.list &&\
   apt-get update &&\
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends\
