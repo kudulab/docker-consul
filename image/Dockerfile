@@ -15,7 +15,7 @@ RUN wget https://github.com/Yelp/dumb-init/releases/download/v1.2.1/dumb-init_1.
 RUN dpkg -i dumb-init_*.deb
 
 # This is the release of Consul to pull in.
-ENV CONSUL_VERSION=1.0.6
+ENV CONSUL_VERSION=1.1.0
 
 # This is the location of the releases.
 ENV HASHICORP_RELEASES=https://releases.hashicorp.com

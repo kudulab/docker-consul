@@ -1,6 +1,8 @@
 #!/usr/bin/dumb-init /bin/sh
 set -ex
 
+export CONSUL_UI_BETA=${CONSUL_UI_BETA:-true}
+
 # You can set CONSUL_BIND_INTERFACE to the name of the interface you'd like to
 # bind to and this will look up the IP and pass the proper -bind= option along
 # to Consul.

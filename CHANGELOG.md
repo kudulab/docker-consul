@@ -1,3 +1,8 @@
+### 0.3.0 (2018-May-23)
+
+ * revert blitznote/debase as base image
+ * update to consul 1.10 to try new UI
+
 ### 0.2.0 (2018-Apr-12)
 
  - use blitznote/debase as base image
