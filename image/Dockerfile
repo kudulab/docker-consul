@@ -37,11 +37,11 @@ RUN gpg --keyserver pgp.mit.edu --recv-keys 91A6E7F85D05C65630BEF18951852D87348F
 RUN mkdir -p /consul/data /consul/config
 
 # Install docker because checks use docker CLI
-RUN /bin/bash -c "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -" &&\
-  echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable edge" > /etc/apt/sources.list.d/docker.list &&\
+RUN /bin/bash -c "curl -fsSL http://apt-docker.ai-traders.com/pubkey.gpg | sudo apt-key add -" &&\
+  echo "deb [arch=amd64] http://apt-docker.ai-traders.com/docker-new/ubuntu-xenial ubuntu-xenial edge" > /etc/apt/sources.list.d/docker.list &&\
   apt-get update &&\
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends\
-  docker-ce=17.11.0~ce-0~ubuntu &&\
+  docker-ce=18.04.0~ce~3-0~ubuntu &&\
   rm -Rf /var/lib/docker/* &&\
   rm -rf /var/lib/apt/lists/* && rm -rf /tmp/* /var/tmp/*
 
