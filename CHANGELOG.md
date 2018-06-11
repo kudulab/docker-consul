@@ -1,3 +1,8 @@
+### 0.4.0 (2018-Jun-11)
+
+ * switch to python3.5
+ * added ceph-common
+
 ### 0.3.0 (2018-May-23)
 
  * revert blitznote/debase as base image

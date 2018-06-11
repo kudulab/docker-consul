@@ -7,9 +7,16 @@ COPY apt_cache /etc/apt/apt.conf.d/01_proxy
 RUN apt-get update &&\
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends\
   tzdata gnupg wget curl ca-certificates cron nano git rake tar unzip sudo rsync apt-transport-https ssh-client net-tools iputils-ping \
-  python2.7 python python-simplejson &&\
+  python3.5 &&\
   apt-get -y autoremove && apt-get -y autoclean && apt-get -y clean &&\
   rm -rf /tmp/* /var/tmp/* && rm -rf /var/lib/apt/lists/*
+
+RUN /bin/bash -c "curl -fsSL http://apt.ai-traders.com/pubkey.gpg | sudo apt-key add -" &&\
+  echo "deb [arch=amd64] http://apt.ai-traders.com/ceph/ Debian main" > /etc/apt/sources.list.d/ceph.list &&\
+  apt-get update &&\
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends\
+  ceph-common &&\
+  rm -rf /var/lib/apt/lists/* && rm -rf /tmp/* /var/tmp/*
 
 RUN wget https://github.com/Yelp/dumb-init/releases/download/v1.2.1/dumb-init_1.2.1_amd64.deb
 RUN dpkg -i dumb-init_*.deb
