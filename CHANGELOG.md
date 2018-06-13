@@ -1,3 +1,9 @@
+### 0.5.0 (2018-Jun-13)
+
+ * added ubuntu-toolchain-r to support new ceph 13.2 and its newer libstdc++
+ * added python2.7 and setup tools to support openstack checks
+ * added openstack checks
+
 ### 0.4.0 (2018-Jun-11)
 
  * switch to python3.5

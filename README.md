@@ -64,6 +64,52 @@ Usage: is_container_running [container_name]
 Usage: seconds_from_creation [-w <secs>] [-c <secs>] -f <file>
 ```
 
+#### Openstack checks
+
+Each check can use file with authorization details, e.g.
+```
+check_nova-services --filename /consul/config/openstack_creds.ini
+```
+where `openstack_creds.ini` has following format:
+```
+[DEFAULT]
+username=admin
+password=*****
+tenant_name=admin
+auth_url=http://192.168.200.17:35357/v3
+```
+
+
+`check_nova-services`
+```
+python openstacknagios/nova/Services.py
+NOVASERVICES OK - [up:5 disabled:0 down:0 total:5] | disabled=0;@1:;;0 down=0;;0;0 total=5;;@0;0 up=5;;;0
+```
+
+`check_nova-hypervisors`
+```
+python openstacknagios/nova/Hypervisors.py --warn_vcpus_percent 0:150 --critical_vcpus_percent 0:200
+NOVAHYPERVISORS OK - [memory_used:28160 memory_percent:44 vcpus_used:21 vcpus_percent:131 running_vms:13] | memory_percent=44;90;95;0;100 memory_used=28160;;;0;63838 running_vms=13;;;0 vcpus_percent=131;150;200;0;100 vcpus_used=21;;;0;16
+```
+
+`check_neutron-agents`
+```
+python openstacknagios/neutron/Agents.py
+NEUTRONAGENTS OK - [up:14 disabled:0 down:0] | disabled=0;@1:;;0 down=0;;0;0 total=14;;@0;0 up=14;;;0
+```
+
+`check_cinder-services`
+```
+python openstacknagios/cinder/Services.py
+CINDERSERVICES OK - [up:4 disabled:0 down:0 total:4] | disabled=0;@1:;;0 down=0;;0;0 total=4;;@0;0 up=4;;;0
+```
+
+`check_glance-images`
+```
+python openstacknagios/glance/Images.py
+GLANCEIMAGES OK - [gettime:0.0003068] | gettime=0.000306844711304;;;0
+```
+
 # Development
 
 If you see a missing check script, you should add it.

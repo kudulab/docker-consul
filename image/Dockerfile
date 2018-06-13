@@ -6,11 +6,13 @@ COPY apt_cache /etc/apt/apt.conf.d/01_proxy
 # python is for scripting
 RUN apt-get update &&\
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends\
+  software-properties-common \
   tzdata gnupg wget curl ca-certificates cron nano git rake tar unzip sudo rsync apt-transport-https ssh-client net-tools iputils-ping \
-  python3.5 &&\
+  python-setuptools python3.5 &&\
   apt-get -y autoremove && apt-get -y autoclean && apt-get -y clean &&\
   rm -rf /tmp/* /var/tmp/* && rm -rf /var/lib/apt/lists/*
 
+RUN add-apt-repository ppa:ubuntu-toolchain-r/test
 RUN /bin/bash -c "curl -fsSL http://apt.ai-traders.com/pubkey.gpg | sudo apt-key add -" &&\
   echo "deb [arch=amd64] http://apt.ai-traders.com/ceph/ Debian main" > /etc/apt/sources.list.d/ceph.list &&\
   apt-get update &&\
@@ -57,6 +59,14 @@ RUN apt-get update &&\
   nagios-plugins-standard libnagios-plugin-perl &&\
   apt-get -y autoremove && apt-get -y autoclean && apt-get -y clean &&\
   rm -rf /tmp/* /var/tmp/* && rm -rf /var/lib/apt/lists/*
+
+# openstack checks
+RUN apt-get update &&\
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends\
+  build-essential python-dev libffi-dev libssl-dev &&\
+  apt-get -y autoremove && apt-get -y autoclean && apt-get -y clean &&\
+  rm -rf /tmp/* /var/tmp/* && rm -rf /var/lib/apt/lists/*
+RUN easy_install git+https://github.com/ai-traders/openstack-nagios-plugins.git
 
 ARG this_image_tag_arg
 ARG this_image_name_arg
