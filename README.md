@@ -44,6 +44,8 @@ Packages:
  * nagios-plugins-standard
  * libnagios-plugin-perl
 
+Docs: https://www.monitoring-plugins.org/doc/man/check_http.html
+
 #### Scripts
 
 ##### check_mem
