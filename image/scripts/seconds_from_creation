@@ -59,13 +59,15 @@ seconds_since_1970_to_file_change=$(stat --format '%Z' "$file")
 seconds_since_1970_to_now=$(date +%s)
 
 seconds_since_file_change_to_now=$((seconds_since_1970_to_now - seconds_since_1970_to_file_change))
+minutes_since_file_change_to_now=$((seconds_since_file_change_to_now/60))
+hours_since_file_change_to_now=$((minutes_since_file_change_to_now/60))
 
 if [[ seconds_since_file_change_to_now -gt $critical ]];then
-    echo "FILE_AGE CRITICAL: $file is $seconds_since_file_change_to_now seconds old"
+    echo "FILE_AGE CRITICAL: $file is $seconds_since_file_change_to_now seconds old (== ${minutes_since_file_change_to_now} minutes == ${hours_since_file_change_to_now} hours)"
     exit 2
 elif [[ seconds_since_file_change_to_now -gt $warning ]];then
-    echo "FILE_AGE WARNING: $file is $seconds_since_file_change_to_now seconds old"
+    echo "FILE_AGE WARNING: $file is $seconds_since_file_change_to_now seconds old (== ${minutes_since_file_change_to_now} minutes == ${hours_since_file_change_to_now} hours)"
     exit 1
 else
-    echo "FILE_AGE OK: $file is $seconds_since_file_change_to_now seconds old"
+    echo "FILE_AGE OK: $file is $seconds_since_file_change_to_now seconds old (== ${minutes_since_file_change_to_now} minutes == ${hours_since_file_change_to_now} hours)"
 fi

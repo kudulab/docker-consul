@@ -1,4 +1,6 @@
 * add check: `check_gocd_agent.py` #17043
+* edit check: `seconds_from_creation` to show backup date also in minutes and
+ hours #17014
 
 ### 0.5.1 (2018-Dec-14)
 

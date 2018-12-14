@@ -64,6 +64,19 @@ Usage: is_container_running [container_name]
 
 ```
 Usage: seconds_from_creation [-w <secs>] [-c <secs>] -f <file>
+  --help     Help. Display this message and quit.
+  <secs>     File must be no more than this many seconds old (default: warn 240 secs, crit 600)
+```
+
+```
+$ seconds_from_creation -f ./releaser
+FILE_AGE OK: ./releaser is 223 seconds old (== 3 minutes == 0 hours)
+$ echo $?
+0
+$ seconds_from_creation -f ./pipeline.gocd.yaml
+FILE_AGE CRITICAL: ./pipeline.gocd.yaml is 1887160 seconds old (== 31452 minutes == 524 hours)
+$ echo $?
+2
 ```
 
 ##### check_gocd_agent.py
