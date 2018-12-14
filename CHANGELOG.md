@@ -1,3 +1,8 @@
+### 0.5.1 (2018-Dec-14)
+
+ * remove signature check on consul which was failing gpg download
+ * use locked dependencies when installing openstack checks
+
 ### 0.5.0 (2018-Jun-13)
 
  * added ubuntu-toolchain-r to support new ceph 13.2 and its newer libstdc++
