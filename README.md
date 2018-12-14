@@ -66,6 +66,29 @@ Usage: is_container_running [container_name]
 Usage: seconds_from_creation [-w <secs>] [-c <secs>] -f <file>
 ```
 
+##### check_gocd_agent.py
+
+```
+$ python3 check_gocd_agent.py --help
+Usage: check_gocd_agent.py [OPTIONS]
+
+Options:
+  --go-server-url TEXT      URL to GoCD server
+  --go-agent-resource TEXT
+  --help                    Show this message and exit.
+```
+
+```
+$ python3 check_gocd_agent.py --go-agent-resource=backup_production
+Found agent: go-agent-backup-production
+$ echo $?
+0
+$ python3 check_gocd_agent.py --go-agent-resource=backup_product
+Did not find agent with backup_product resource
+$ echo $?
+2
+```
+
 #### Openstack checks
 
 Each check can use file with authorization details, e.g.

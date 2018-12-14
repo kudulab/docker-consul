@@ -1,3 +1,5 @@
+* add check: `check_gocd_agent.py` #17043
+
 ### 0.5.1 (2018-Dec-14)
 
  * remove signature check on consul which was failing gpg download

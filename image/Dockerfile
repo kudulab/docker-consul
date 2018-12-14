@@ -64,9 +64,10 @@ RUN apt-get update &&\
   rm -rf /tmp/* /var/tmp/* && rm -rf /var/lib/apt/lists/*
 RUN easy_install git+https://github.com/ai-traders/openstack-nagios-plugins.git
 
-ARG this_image_tag_arg
-ARG this_image_name_arg
-ENV this_image_tag=${this_image_tag_arg} this_image_name=${this_image_name_arg}
+RUN git clone --branch 0.1.0 http://git.ai-traders.com/platform/python-ops.git /python-ops &&\
+   cd /python-ops &&\
+   ./install.sh &&\
+   cd / && rm -rf /python-ops
 
 # Server RPC is used for communication between Consul clients and servers for internal
 # request forwarding.
@@ -93,3 +94,7 @@ COPY scripts/* /usr/bin/
 # everything in RAM, exposes a web UI and HTTP endpoints, and bootstraps itself.
 # Don't use this configuration for production.
 CMD ["agent", "-dev", "-enable-script-checks", "-client", "0.0.0.0"]
+
+ARG this_image_tag_arg
+ARG this_image_name_arg
+ENV this_image_tag=${this_image_tag_arg} this_image_name=${this_image_name_arg}
