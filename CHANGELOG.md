@@ -1,6 +1,7 @@
 * add check: `check_gocd_agent.py` #17043
 * edit check: `seconds_from_creation` to show backup date also in minutes and
  hours #17014
+* fix warnings from check: `check_mem` #17017, just use the fixed version from [github](https://github.com/jasonhancock/nagios-memory/blob/5c7b5620f74d6c2c280f378705883bc063a0f032/plugins/check_mem)
 
 ### 0.5.1 (2018-Dec-14)
 

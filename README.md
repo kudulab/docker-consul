@@ -54,6 +54,11 @@ Docs: https://www.monitoring-plugins.org/doc/man/check_http.html
 Usage: check_mem [-w|--warning=<percent> ] [ -c|--critical=<percent> ]
 ```
 
+```
+check_mem -w 80 -c 90
+MEMORY CRITICAL - 94% used | used=31490465792B;26547391692.8;29865815654.4;0;33184239616 cached=1107591168B;;;0;33184239616 buffers=355876864B;;;0;33184239616 free=230305792B;;;0;33184239616
+```
+
 ##### is_container_running
 
 ```
