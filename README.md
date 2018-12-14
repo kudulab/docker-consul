@@ -54,6 +54,11 @@ Docs: https://www.monitoring-plugins.org/doc/man/check_http.html
 Usage: check_mem [-w|--warning=<percent> ] [ -c|--critical=<percent> ]
 ```
 
+```
+check_mem -w 80 -c 90
+MEMORY CRITICAL - 94% used | used=31490465792B;26547391692.8;29865815654.4;0;33184239616 cached=1107591168B;;;0;33184239616 buffers=355876864B;;;0;33184239616 free=230305792B;;;0;33184239616
+```
+
 ##### is_container_running
 
 ```
@@ -64,6 +69,42 @@ Usage: is_container_running [container_name]
 
 ```
 Usage: seconds_from_creation [-w <secs>] [-c <secs>] -f <file>
+  --help     Help. Display this message and quit.
+  <secs>     File must be no more than this many seconds old (default: warn 240 secs, crit 600)
+```
+
+```
+$ seconds_from_creation -f ./releaser
+FILE_AGE OK: ./releaser is 223 seconds old (== 3 minutes == 0 hours)
+$ echo $?
+0
+$ seconds_from_creation -f ./pipeline.gocd.yaml
+FILE_AGE CRITICAL: ./pipeline.gocd.yaml is 1887160 seconds old (== 31452 minutes == 524 hours)
+$ echo $?
+2
+```
+
+##### check_gocd_agent.py
+
+```
+$ python3 check_gocd_agent.py --help
+Usage: check_gocd_agent.py [OPTIONS]
+
+Options:
+  --go-server-url TEXT      URL to GoCD server
+  --go-agent-resource TEXT
+  --help                    Show this message and exit.
+```
+
+```
+$ python3 check_gocd_agent.py --go-agent-resource=backup_production
+Found agent: go-agent-backup-production
+$ echo $?
+0
+$ python3 check_gocd_agent.py --go-agent-resource=backup_product
+Did not find agent with backup_product resource
+$ echo $?
+2
 ```
 
 #### Openstack checks
