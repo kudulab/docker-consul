@@ -1,3 +1,13 @@
+### 1.0.0 (2019-May-13)
+
+ * improved `check_gocd_agent.py` to support auth credentials
+ * added consul 1.5.0
+ * remove ai proxy usage
+ * remove openstack checks, ceph
+ * use new workflow scripts
+ * use only python 3.5
+ * added license
+
 ### 0.5.2 (2018-Dec-14)
 
 * add check: `check_gocd_agent.py` #17043

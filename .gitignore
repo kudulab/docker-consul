@@ -3,3 +3,6 @@
 /image/imagerc.yml
 /docker-ops
 /releaser
+.idea/
+/ops/
+__pycache__

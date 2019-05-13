@@ -1,13 +1,13 @@
-# docker-ai_consul
+# kudulab/consul docker image
 
 This image is based on pieces of [official](https://github.com/hashicorp/docker-consul) `consul` image,
- BUT with several changes which fit ait infrastructure:
+ BUT with several changes which fit kudulab infrastructure:
 
  * This image **runs on ubuntu:16**. official image runs on alpine, we would have problems on it, since most our health checks target ubuntu.
  * we don't use docker volume, but rely on bind mounts from host.
  * consul agent **runs as root**. Because we need it to be able to access a lot of external/out of container resources.
- If we had to coordinate uid/gid of consul in docker container with uid/gid of all other container, that would be a PITA (like on aga archive and backup).
- * we pack all our common checks and scripts into the image and reuse on all deployments. While official image is empty alpine.
+ If we had to coordinate uid/gid of consul in docker container with uid/gid of all other container, that would be a PITA.
+ * we pack all our common checks and scripts into the image and reuse on all deployments. While official image is an empty alpine.
 
 ## Usage
 
@@ -74,83 +74,30 @@ Usage: seconds_from_creation [-w <secs>] [-c <secs>] -f <file>
 ```
 
 ```
-$ seconds_from_creation -f ./releaser
-FILE_AGE OK: ./releaser is 223 seconds old (== 3 minutes == 0 hours)
+$ seconds_from_creation -f ./myfile
+FILE_AGE OK: ./myfile is 223 seconds old (== 3 minutes == 0 hours)
 $ echo $?
 0
-$ seconds_from_creation -f ./pipeline.gocd.yaml
-FILE_AGE CRITICAL: ./pipeline.gocd.yaml is 1887160 seconds old (== 31452 minutes == 524 hours)
+$ seconds_from_creation -f ./myfile
+FILE_AGE CRITICAL: ./myfile is 1887160 seconds old (== 31452 minutes == 524 hours)
 $ echo $?
 2
 ```
 
 ##### check_gocd_agent.py
 
-```
+Checks if GoCD has a healthy agent with a specified resource.
+
+```console
 $ python3 check_gocd_agent.py --help
 Usage: check_gocd_agent.py [OPTIONS]
 
 Options:
   --go-server-url TEXT      URL to GoCD server
   --go-agent-resource TEXT
+  --username TEXT
+  --password-file TEXT
   --help                    Show this message and exit.
-```
-
-```
-$ python3 check_gocd_agent.py --go-agent-resource=backup_production
-Found agent: go-agent-backup-production
-$ echo $?
-0
-$ python3 check_gocd_agent.py --go-agent-resource=backup_product
-Did not find agent with backup_product resource
-$ echo $?
-2
-```
-
-#### Openstack checks
-
-Each check can use file with authorization details, e.g.
-```
-check_nova-services --filename /consul/config/openstack_creds.ini
-```
-where `openstack_creds.ini` has following format:
-```
-[DEFAULT]
-username=admin
-password=*****
-tenant_name=admin
-auth_url=http://192.168.200.17:35357/v3
-```
-
-
-`check_nova-services`
-```
-python openstacknagios/nova/Services.py
-NOVASERVICES OK - [up:5 disabled:0 down:0 total:5] | disabled=0;@1:;;0 down=0;;0;0 total=5;;@0;0 up=5;;;0
-```
-
-`check_nova-hypervisors`
-```
-python openstacknagios/nova/Hypervisors.py --warn_vcpus_percent 0:150 --critical_vcpus_percent 0:200
-NOVAHYPERVISORS OK - [memory_used:28160 memory_percent:44 vcpus_used:21 vcpus_percent:131 running_vms:13] | memory_percent=44;90;95;0;100 memory_used=28160;;;0;63838 running_vms=13;;;0 vcpus_percent=131;150;200;0;100 vcpus_used=21;;;0;16
-```
-
-`check_neutron-agents`
-```
-python openstacknagios/neutron/Agents.py
-NEUTRONAGENTS OK - [up:14 disabled:0 down:0] | disabled=0;@1:;;0 down=0;;0;0 total=14;;@0;0 up=14;;;0
-```
-
-`check_cinder-services`
-```
-python openstacknagios/cinder/Services.py
-CINDERSERVICES OK - [up:4 disabled:0 down:0 total:4] | disabled=0;@1:;;0 down=0;;0;0 total=4;;@0;0 up=4;;;0
-```
-
-`check_glance-images`
-```
-python openstacknagios/glance/Images.py
-GLANCEIMAGES OK - [gettime:0.0003068] | gettime=0.000306844711304;;;0
 ```
 
 # Development
@@ -159,4 +106,20 @@ If you see a missing check script, you should add it.
 
 Scripts should be generic, not reference a specific deployment. For example,
 it is OK to add scripts for validating mongodb, zookeeper or whatever other type of server.
-But the scripts should not contain `.ai-traders.com`, assume that some remote service is present, etc.
+But the scripts should not contain any domains or assume that some remote service is present, etc.
+
+## License
+
+Copyright 2019 Ewa Czechowska, Tomasz Sętkowski
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.

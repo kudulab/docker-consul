@@ -1,10 +1,13 @@
+format_version: 3
 pipelines:
-  docker-ai_consul:
+  docker-kudulab-consul:
     group: consul
     label_template: "${git[:8]}"
     materials:
       git:
         type: configrepo
+    secure_variables:
+      VAULT_TOKEN: "AES:qNEAnD/6RnGDO5J9E/YXZg==:w6qfqB1QNICZlJCzTjRtPv/uzls/FPVHPJCJk6lUDcSokUrUtm5AKEjQbiaSdtKb"
     stages:
       - build:
           clean_workspace: true
@@ -21,12 +24,25 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks verify_version
+                      - ./tasks build
+      - itest:
+          clean_workspace: true
+          jobs:
+            end_user:
+              resources:
+                - docker_builder
+              tasks:
+                - fetch:
+                    stage: build
+                    job: docker_image
+                    is_file: yes
+                    source: imagerc
+                    destination: image/
                 - exec:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ops_docker_push=true ./tasks build
+                      - ./tasks test
       - release:
           clean_workspace: true
           jobs:
@@ -44,21 +60,6 @@ pipelines:
       - publish:
           clean_workspace: true
           jobs:
-            base:
-              resources:
-                - docker_builder
-              tasks:
-                - fetch:
-                    stage: build
-                    job: docker_image
-                    is_file: yes
-                    source: imagerc
-                    destination: image/
-                - exec:
-                    command: /bin/bash
-                    arguments:
-                      - -c
-                      - ./tasks publish_base
             top:
               resources:
                 - docker_builder

@@ -1,4 +1,0 @@
----
-backend: 'consul'
-project_name: 'docker-ai_consul'
-consul_url: 'http://consul.ai-traders.com:8500'
